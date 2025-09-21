@@ -13,12 +13,16 @@
 ## Summary
 In this task you will do a CRUD (Create, Read, Update, Delete)
 with 3 different databases.
-
 You will learn how to correctly use HTTP verbs and how
 to manage response codes.
 
-In this project we will also add the use of the DTO pattern 
-for data persistence.
+In addition, we will implement the use of DTO to separate 
+the responsibilities of the entity model (whose function is 
+to represent a row in the DB's fruits table and contains 
+annotations for data persistence with JPA/Hibernate) from 
+those of the data transfer object (DTO, whose function is 
+to transport data between the client and the server, acting 
+as a security filter that prevents direct exposure of the entity).
 
 -----
 

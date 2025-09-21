@@ -52,6 +52,7 @@ as a security filter that prevents direct exposure of the entity).
 - **Git/GitHub**: version control
 - **Additional dependencies**:
     - JDBC
+    - Lombok
     - Postman
     - Docker compose
 
@@ -101,6 +102,7 @@ http://localhost:8080/fruits-api/{id}
 - [Postman](https://learning.postman.com/docs/getting-started/first-steps/sending-the-first-request/)
 - [JPA](https://www.arquitecturajava.com/spring-boot-jpa-y-su-configuracion/)
 - [Hibernate](https://www.baeldung.com/spring-boot-hibernate)
+- [ResponseEntity](https://www.arquitecturajava.com/responseentity-spring-y-rest/)
 - [HTTP](https://www.restapitutorial.com/httpstatuscodes)
 
 [Back to top](#top)

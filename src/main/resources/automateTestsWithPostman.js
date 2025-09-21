@@ -39,7 +39,7 @@ pm.test("Fruits array is not empty", function () {
     pm.expect(pm.response.json()).to.not.be.empty;
 });
 
-// *** GET/fruits-api/{} ***
+// *** GET/fruits-api/{id} ***
 pm.test("Status code is 200 OK", function () {
     pm.response.to.have.status(200);
 });
@@ -50,7 +50,7 @@ pm.test("Returned fruit has the correct ID", function () {
     pm.expect(responseData.id).to.eql(parseInt(fruitId));
 });
 
-// *** PUT/fruits-api/{} ***
+// *** PUT/fruits-api/{id} ***
 pm.test("Status code is 200 OK", function () {
     pm.response.to.have.status(200);
 });
@@ -61,7 +61,7 @@ pm.test("Updated fruit data is correct", function () {
     pm.expect(responseData.quantityKilos).to.eql(10);
 });
 
-// *** DELETE/fruits-api/{} ***
+// *** DELETE/fruits-api/{id} ***
 pm.test("Status code is 204 No Content", function () {
     pm.response.to.have.status(204);
 });

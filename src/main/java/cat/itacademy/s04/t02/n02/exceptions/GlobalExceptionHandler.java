@@ -3,6 +3,7 @@ package cat.itacademy.s04.t02.n02.exceptions;
 import cat.itacademy.s04.t02.n02.dto.ErrorDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -22,6 +23,23 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorDTO> handleDuplicate(DuplicateFruitException ex, WebRequest req) {
         var err = new ErrorDTO(ex.getMessage(), req.getDescription(false).replace("uri=", ""), OffsetDateTime.now(), HttpStatus.CONFLICT.value());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(err);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorDTO> handleValidationErrors(MethodArgumentNotValidException ex, WebRequest req) {
+        String message = ex.getBindingResult().getFieldErrors().stream()
+                .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                .findFirst()
+                .orElse("Invalid request data");
+
+        var err = new ErrorDTO(
+                message,
+                req.getDescription(false).replace("uri=", ""),
+                OffsetDateTime.now(),
+                HttpStatus.BAD_REQUEST.value()
+        );
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
     }
 
     @ExceptionHandler(Exception.class)

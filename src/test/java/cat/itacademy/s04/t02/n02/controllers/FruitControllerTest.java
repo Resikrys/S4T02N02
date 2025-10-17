@@ -7,9 +7,8 @@ import cat.itacademy.s04.t02.n02.exceptions.NotFoundException;
 import cat.itacademy.s04.t02.n02.services.FruitService;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.Test;
+
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -17,7 +16,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.net.URI;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -96,5 +94,37 @@ class FruitControllerTest {
         mockMvc.perform(get("/fruits-api/getAll"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2));
+    }
+
+    @Test
+    void update_returns200_whenOk() throws Exception {
+        FruitRequest req = new FruitRequest("Mango", 8);
+        FruitResponse resp = new FruitResponse(5L, "Mango", 8);
+
+        when(fruitService.update(eq(5L), any(FruitRequest.class))).thenReturn(resp);
+
+        mockMvc.perform(put("/fruits-api/5")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(req)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(5))
+                .andExpect(jsonPath("$.name").value("Mango"));
+    }
+
+    @Test
+    void delete_returns204_whenOk() throws Exception {
+        Mockito.doNothing().when(fruitService).delete(3L);
+
+        mockMvc.perform(delete("/fruits-api/3"))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void delete_returns404_whenNotFound() throws Exception {
+        Mockito.doThrow(new NotFoundException("Fruit with id 99 not found"))
+                .when(fruitService).delete(99L);
+
+        mockMvc.perform(delete("/fruits-api/99"))
+                .andExpect(status().isNotFound());
     }
 }

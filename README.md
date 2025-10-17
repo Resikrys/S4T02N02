@@ -104,5 +104,6 @@ http://localhost:8080/fruits-api/{id}
 - [Hibernate](https://www.baeldung.com/spring-boot-hibernate)
 - [ResponseEntity](https://www.arquitecturajava.com/responseentity-spring-y-rest/)
 - [HTTP](https://www.restapitutorial.com/httpstatuscodes)
+- [Conventional commits](https://www.conventionalcommits.org/en/v1.0.0/)
 
 [Back to top](#top)

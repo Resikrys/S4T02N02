@@ -46,7 +46,6 @@ public class FruitService {
     @Transactional
     public FruitResponse update(Long id, FruitRequest request) {
         Fruit existing = repository.findById(id).orElseThrow(() -> new NotFoundException("Fruit with id " + id + " not found"));
-        // If updating name, ensure we don't collide with another fruit
         if (!existing.getName().equalsIgnoreCase(request.name()) && repository.existsByNameIgnoreCase(request.name())) {
             throw new DuplicateFruitException("Another fruit with name '" + request.name() + "' already exists");
         }

@@ -14,8 +14,11 @@ import java.util.List;
 @RequestMapping("/fruits-api")
 public class FruitController {
 
-    @Autowired
-    private FruitService fruitService;
+    private final FruitService service;
+
+    public FruitController(FruitService service) {
+        this.service = service;
+    }
 
     @PostMapping
     public ResponseEntity<Fruit> createFruit(@RequestBody FruitDTO fruitDTO) {

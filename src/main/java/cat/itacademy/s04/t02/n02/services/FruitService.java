@@ -12,8 +12,11 @@ import java.util.List;
 @Service
 public class FruitService {
 
-    @Autowired
-    private FruitRepository fruitRepository;
+    private final FruitRepository repository;
+
+    public FruitService(FruitRepository repository) {
+        this.repository = repository;
+    }
 
     public Fruit createFruit(FruitDTO fruitDTO) {
         Fruit fruit = new Fruit(fruitDTO.getName(), fruitDTO.getQuantityKilos());

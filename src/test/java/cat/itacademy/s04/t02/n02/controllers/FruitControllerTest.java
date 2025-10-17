@@ -127,4 +127,23 @@ class FruitControllerTest {
         mockMvc.perform(delete("/fruits-api/99"))
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+    void handleUnexpectedException_returns500() throws Exception {
+        when(fruitService.findById(7L)).thenThrow(new RuntimeException("boom"));
+
+        mockMvc.perform(get("/fruits-api/7"))
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.message").value("Internal server error"));
+    }
+
+    @Test
+    void create_returns400_whenInvalidRequest() throws Exception {
+        FruitRequest invalid = new FruitRequest("", 5);
+
+        mockMvc.perform(post("/fruits-api")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(invalid)))
+                .andExpect(status().isBadRequest());
+    }
 }

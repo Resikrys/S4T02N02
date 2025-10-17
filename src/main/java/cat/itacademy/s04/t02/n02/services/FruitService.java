@@ -2,7 +2,7 @@ package cat.itacademy.s04.t02.n02.services;
 
 import cat.itacademy.s04.t02.n02.exceptions.FruitNotFoundException;
 import cat.itacademy.s04.t02.n02.models.Fruit;
-import cat.itacademy.s04.t02.n02.models.FruitDTO;
+import cat.itacademy.s04.t02.n02.dto.FruitDTO;
 import cat.itacademy.s04.t02.n02.repository.FruitRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

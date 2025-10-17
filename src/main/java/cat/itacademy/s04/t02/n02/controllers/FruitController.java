@@ -31,7 +31,7 @@ public class FruitController {
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(created.id())
+                .buildAndExpand(created.id()) //record accessor (instead of getId)
                 .toUri();
 
         return ResponseEntity.created(location).body(created);

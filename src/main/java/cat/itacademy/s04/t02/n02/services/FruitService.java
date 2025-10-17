@@ -1,6 +1,6 @@
 package cat.itacademy.s04.t02.n02.services;
 
-import cat.itacademy.s04.t02.n02.exceptions.FruitNotFoundException;
+import cat.itacademy.s04.t02.n02.exceptions.NotFoundException;
 import cat.itacademy.s04.t02.n02.models.Fruit;
 import cat.itacademy.s04.t02.n02.dto.FruitDTO;
 import cat.itacademy.s04.t02.n02.repository.FruitRepository;
@@ -22,7 +22,7 @@ public class FruitService {
 
     public Fruit getOneFruit(int id) {
         return fruitRepository.findById(id)
-                .orElseThrow(() -> new FruitNotFoundException("Fruit with id " + id + " not found."));
+                .orElseThrow(() -> new NotFoundException("Fruit with id " + id + " not found."));
     }
 
     public List<Fruit> getAllFruits() {

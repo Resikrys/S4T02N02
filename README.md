@@ -95,6 +95,17 @@ http://localhost:8080/fruits-api/{id}
 ```
 -----
 
+### ⚙️ Practical tips to achieve maximum testing coverage
+
+| Test type                            | What it covers     | Cost | Coverage gain  |
+|--------------------------------------|--------------------|------|----------------|
+| 🧪 Controller “happy paths”          | Principal flux     | Low  | +20–30 %       |
+| 🚫 Controller errors (404, 409, 500) | Negative branch    | Low  | +10 %          |
+| 🧱 Service (unitary testing)         | If/else conditions | Mid  | +10 – 15 %     |
+| 🧰 Validations `@Valid`              | Bad request        | Low  | +5 %           |
+| ⚠️ GlobalExceptionHandler            | 500s generics      | Low  | +3 %           |
+
+
 ## 📚 Additional Resources
 - [Badges](https://github.com/alexandresanlim/Badges4-README.md-Profile?tab=readme-ov-file#-frameworks--library-)
 - [Spring-MYSQL](https://spring.io/guides/gs/accessing-data-mysql)

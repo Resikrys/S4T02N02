@@ -1,9 +1,14 @@
 package cat.itacademy.s04.t02.n02.services;
 
+import cat.itacademy.s04.t02.n02.dto.FruitRequest;
+import cat.itacademy.s04.t02.n02.dto.FruitResponse;
+import cat.itacademy.s04.t02.n02.exceptions.DuplicateFruitException;
 import cat.itacademy.s04.t02.n02.exceptions.NotFoundException;
+import cat.itacademy.s04.t02.n02.mapper.FruitMapper;
 import cat.itacademy.s04.t02.n02.models.Fruit;
 import cat.itacademy.s04.t02.n02.dto.FruitDTO;
 import cat.itacademy.s04.t02.n02.repository.FruitRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,30 +23,71 @@ public class FruitService {
         this.repository = repository;
     }
 
-    public Fruit createFruit(FruitDTO fruitDTO) {
-        Fruit fruit = new Fruit(fruitDTO.getName(), fruitDTO.getQuantityKilos());
-        return fruitRepository.save(fruit);
+    @Transactional
+    public FruitResponse createFruit(FruitRequest request) {
+        if (repository.existsByNameIgnoreCase(request.name())) {
+            throw new DuplicateFruitException("Fruit with name '" + request.name() + "' already exists");
+        }
+        Fruit toSave = FruitMapper.fromRequest(request);
+        Fruit saved = repository.save(toSave);
+        return FruitMapper.toResponse(saved);
     }
 
-    public Fruit getOneFruit(int id) {
-        return fruitRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Fruit with id " + id + " not found."));
+    public FruitResponse findById(Long id) {
+        Fruit f = repository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Fruit with id " + id + " not found"));
+        return FruitMapper.toResponse(f);
     }
 
-    public List<Fruit> getAllFruits() {
-        return fruitRepository.findAll();
+    public List<FruitResponse> findAll() {
+        return repository.findAll().stream().map(FruitMapper::toResponse).toList();
     }
 
-    public Fruit updateFruit(int id, FruitDTO fruitDTO) {
-        Fruit existingFruit = getOneFruit(id);
-        existingFruit.setName(fruitDTO.getName());
-        existingFruit.setQuantityKilos(fruitDTO.getQuantityKilos());
-        return fruitRepository.save(existingFruit);
+    @Transactional
+    public FruitResponse update(Long id, FruitRequest request) {
+        Fruit existing = repository.findById(id).orElseThrow(() -> new NotFoundException("Fruit with id " + id + " not found"));
+        // If updating name, ensure we don't collide with another fruit
+        if (!existing.getName().equalsIgnoreCase(request.name()) && repository.existsByNameIgnoreCase(request.name())) {
+            throw new DuplicateFruitException("Another fruit with name '" + request.name() + "' already exists");
+        }
+        existing.setName(request.name());
+        existing.setQuantityKilos(request.quantityKilos());
+        Fruit updated = repository.save(existing);
+        return FruitMapper.toResponse(updated);
     }
 
-    public void deleteFruit(int id) {
-        Fruit fruit = getOneFruit(id);
-        fruitRepository.delete(fruit);
+    @Transactional
+    public void delete(Long id) {
+        if (!repository.existsById(id)) {
+            throw new NotFoundException("Fruit with id " + id + " not found");
+        }
+        repository.deleteById(id);
     }
+
+//    public Fruit createFruit(FruitDTO fruitDTO) {
+//        Fruit fruit = new Fruit(fruitDTO.getName(), fruitDTO.getQuantityKilos());
+//        return fruitRepository.save(fruit);
+//    }
+//
+//    public Fruit getOneFruit(int id) {
+//        return fruitRepository.findById(id)
+//                .orElseThrow(() -> new NotFoundException("Fruit with id " + id + " not found."));
+//    }
+//
+//    public List<Fruit> getAllFruits() {
+//        return fruitRepository.findAll();
+//    }
+//
+//    public Fruit updateFruit(int id, FruitDTO fruitDTO) {
+//        Fruit existingFruit = getOneFruit(id);
+//        existingFruit.setName(fruitDTO.getName());
+//        existingFruit.setQuantityKilos(fruitDTO.getQuantityKilos());
+//        return fruitRepository.save(existingFruit);
+//    }
+//
+//    public void deleteFruit(int id) {
+//        Fruit fruit = getOneFruit(id);
+//        fruitRepository.delete(fruit);
+//    }
 
 }

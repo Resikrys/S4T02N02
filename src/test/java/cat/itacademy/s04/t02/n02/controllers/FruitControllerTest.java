@@ -43,11 +43,11 @@ class FruitControllerTest {
 
         when(fruitService.createFruit(any(FruitRequest.class))).thenReturn(resp);
 
-        mockMvc.perform(post("/fruits-api")
+        mockMvc.perform(post("/api/v1/fruits")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(req)))
                 .andExpect(status().isCreated())
-                .andExpect(header().string("Location", "http://localhost/fruits-api/2"))
+                .andExpect(header().string("Location", "http://localhost/api/v1/fruits/2"))
                 .andExpect(jsonPath("$.id").value(2))
                 .andExpect(jsonPath("$.name").value("Apple"));
     }
@@ -58,7 +58,7 @@ class FruitControllerTest {
 
         when(fruitService.createFruit(any(FruitRequest.class))).thenThrow(new DuplicateFruitException("Fruit with name 'Banana' already exists"));
 
-        mockMvc.perform(post("/fruits-api")
+        mockMvc.perform(post("/api/v1/fruits")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(req)))
                 .andExpect(status().isConflict())
@@ -69,7 +69,7 @@ class FruitControllerTest {
     void getById_returns200_whenExists() throws Exception {
         when(fruitService.findById(1L)).thenReturn(new FruitResponse(1L, "Banana", 10));
 
-        mockMvc.perform(get("/fruits-api/1"))
+        mockMvc.perform(get("/api/v1/fruits/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.name").value("Banana"));
@@ -79,7 +79,7 @@ class FruitControllerTest {
     void getById_returns404_whenNotFound() throws Exception {
         when(fruitService.findById(99L)).thenThrow(new NotFoundException("Fruit with id 99 not found"));
 
-        mockMvc.perform(get("/fruits-api/99"))
+        mockMvc.perform(get("/api/v1/fruits/99"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").value("Fruit with id 99 not found"));
     }
@@ -91,7 +91,7 @@ class FruitControllerTest {
                 new FruitResponse(2L, "Apple", 5)
         ));
 
-        mockMvc.perform(get("/fruits-api/getAll"))
+        mockMvc.perform(get("/api/v1/fruits/getAll"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2));
     }
@@ -103,7 +103,7 @@ class FruitControllerTest {
 
         when(fruitService.update(eq(5L), any(FruitRequest.class))).thenReturn(resp);
 
-        mockMvc.perform(put("/fruits-api/5")
+        mockMvc.perform(put("/api/v1/fruits/5")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(req)))
                 .andExpect(status().isOk())
@@ -115,7 +115,7 @@ class FruitControllerTest {
     void delete_returns204_whenOk() throws Exception {
         Mockito.doNothing().when(fruitService).delete(3L);
 
-        mockMvc.perform(delete("/fruits-api/3"))
+        mockMvc.perform(delete("/api/v1/fruits/3"))
                 .andExpect(status().isNoContent());
     }
 
@@ -124,7 +124,7 @@ class FruitControllerTest {
         Mockito.doThrow(new NotFoundException("Fruit with id 99 not found"))
                 .when(fruitService).delete(99L);
 
-        mockMvc.perform(delete("/fruits-api/99"))
+        mockMvc.perform(delete("/api/v1/fruits/99"))
                 .andExpect(status().isNotFound());
     }
 
@@ -132,7 +132,7 @@ class FruitControllerTest {
     void handleUnexpectedException_returns500() throws Exception {
         when(fruitService.findById(7L)).thenThrow(new RuntimeException("boom"));
 
-        mockMvc.perform(get("/fruits-api/7"))
+        mockMvc.perform(get("/api/v1/fruits/7"))
                 .andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.message").value("Internal server error"));
     }
@@ -141,7 +141,7 @@ class FruitControllerTest {
     void create_returns400_whenInvalidRequest() throws Exception {
         FruitRequest invalid = new FruitRequest("", 5);
 
-        mockMvc.perform(post("/fruits-api")
+        mockMvc.perform(post("/api/v1/fruits")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalid)))
                 .andExpect(status().isBadRequest());

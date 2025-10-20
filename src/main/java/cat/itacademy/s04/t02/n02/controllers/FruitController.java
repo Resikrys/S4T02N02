@@ -12,7 +12,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("/fruits-api")
+@RequestMapping("/api/v1/fruits")
 public class FruitController {
 
     private final FruitService service;
